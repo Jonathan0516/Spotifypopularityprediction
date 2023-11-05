@@ -1,5 +1,5 @@
 import pandas as pd
-from scrap import get_genres
+from scrap import get_genres, get_popularity
 import traceback
 def convert_and_save_to_song_only(df: pd.DataFrame) -> None:
 
@@ -12,6 +12,8 @@ def convert_and_save_to_song_only(df: pd.DataFrame) -> None:
 
 def add_genres_to_song_only() -> None:
     df = pd.read_csv('datasets/song_only.csv')
+    if 'genres' not in df.columns:
+        df['genres'] = None
     try:
         for index, row in df.iterrows():
             # check if genres already exists
@@ -26,4 +28,21 @@ def add_genres_to_song_only() -> None:
     finally:
         df.to_csv('datasets/song_only.csv', index=False)
 
-add_genres_to_song_only()
+def add_popularity_to_song_only() -> None:
+    df = pd.read_csv('datasets/song_only.csv')
+    if 'popularity' not in df.columns:
+        df['popularity'] = None
+    try:
+        for index, row in df.iterrows():
+            if not pd.isna(row['popularity']):
+                continue
+            popularity = get_popularity(row['id'])
+            df.at[index, 'popularity'] = popularity
+            print("Progress: ", index, "/", len(df) - 1)
+    except Exception as e:
+        print("Error at index: ", index, " reason: ", e)
+        traceback.print_exc()
+    finally:
+        df.to_csv('datasets/song_only.csv', index=False)
+# add_genres_to_song_only()
+add_popularity_to_song_only()

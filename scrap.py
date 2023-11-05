@@ -16,18 +16,22 @@ Users = [
         '542a554fb05a4056a3865e446c7f9d1a',
         'f795c42fd49547f6a226099f4c53246c',
         '84f7a38b02514b07b11f3112f048ad8f',
+        '08153955ee3542fc9c4039fea2ada1ae',
     ]
 ]
 
+access_token = "BQBpErGjSpd3B5B1OtC32alT9GIWAe9XWloeDlUgPUevxzLSHmGoR73_tfv3aCUm4TwaAmbtLN1X5qPUMlGrwiwGKk9luUk9bt8_F0IPhiS7X1UNfqCvx3KAhYfyn3hW2Fj5kILzOFfOVTNlliFpNEEqei8WcyZOfKpUkLBqRoorJSuSTE9XvwgP8jljVaSwlwo"
+track_url = "https://api.spotify.com/v1/tracks/"
+audio_features_url = "https://api.spotify.com/v1/audio-features/"
+album_url = "https://api.spotify.com/v1/albums/"
+artists_url = "https://api.spotify.com/v1/artists?ids="
+
 def get_genres(id: str) -> list[str]:
 # id = "2UW7JaomAMuX9pZrjVpHAU"
-    track_url = "https://api.spotify.com/v1/tracks/"
-    audio_features_url = "https://api.spotify.com/v1/audio-features/"
-    album_url = "https://api.spotify.com/v1/albums/"
-    artists_url = "https://api.spotify.com/v1/artists?ids="
-    access_token = "BQDM6kIpMQtUCoWaVAZNLr41pV6gNZoM2Gjjy_3Ibh__E03jzR0VP1F7ozmLK4xH7tVC9mbsI0QtBAMDtSFHk34iTBtU6m2syoSeE6FkRVL748mdqn9cTBeqmBnkBcRT08MYaDRR31xJXfHL-1wAjTpaOibJBDzhGx46LwDcJ4XhJZkeCRkSpOFWOfl2Y8bUmW0"
+    
+    
     code = "AQAjxJCqu1a80TZAgpruE6EblYXHHQf7yi0j25Ll-aVnARoT35OD_WxmAqmMH0Qg0G5CXmvdMz75EGyu9nyi1IvI9J-RiVe-0h7aaeYR9OGMbOYWn9_O7Qz46kBSuxyuj561_OtMkXz-zIHap2jTivVebTTXpI4h"
-    authorize_url = f"https://accounts.spotify.com/authorize?client_id=84f7a38b02514b07b11f3112f048ad8f&redirect_uri=https://localhost:99&response_type=token"
+    authorize_url = f"https://accounts.spotify.com/authorize?client_id=08153955ee3542fc9c4039fea2ada1ae&redirect_uri=https://localhost:99&response_type=token"
 
     headers = {"Authorization": "Bearer " + access_token}
 
@@ -59,3 +63,11 @@ def get_genres(id: str) -> list[str]:
     return list(song_genres)
 
 
+def get_popularity(id: str) -> int:
+    headers = {"Authorization": "Bearer " + access_token}
+    track_res = requests.get(track_url + id, headers=headers)
+    if track_res.status_code != 200:
+        raise Exception("Error: ", track_res.status_code, track_res.text)
+    track_json = json.loads(track_res.text)
+    return int(track_json['popularity'])
+    
